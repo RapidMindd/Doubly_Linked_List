@@ -1,17 +1,20 @@
 #include <iostream>
 #include <limits>
 #include "bidir_list.hpp"
+#include "pool_allocator.hpp"
 
 int main()
 {
   size_t max_num = std::numeric_limits< size_t >::max();
-  using stringListPair = std::pair< std::string, tarasenko::BidirList< size_t > >;
-  auto list = tarasenko::BidirList< stringListPair >();
+  using SizeList = tarasenko::BidirList< size_t, PoolAllocator< size_t > >;
+  using stringListPair = std::pair< std::string, SizeList >;
+  using StringList = tarasenko::BidirList< stringListPair, PoolAllocator< stringListPair > >;
+  auto list = StringList();
   std::string current_str;
 
   while (std::cin >> current_str)
   {
-    auto current_list = tarasenko::BidirList< size_t >();
+    auto current_list = SizeList();
     size_t current_val = 0;
     while (std::cin >> current_val)
     {
@@ -48,13 +51,14 @@ int main()
   }
 
   using IterSizePair = std::pair< tarasenko::ListIter< size_t >, size_t >;
-  auto iter_list = tarasenko::BidirList< IterSizePair >();
+  using IterList = tarasenko::BidirList< IterSizePair, PoolAllocator< IterSizePair > >;
+  auto iter_list = IterList();
   for (auto it = list.begin(); it != list.end(); ++it)
   {
     iter_list.push_back(std::make_pair(it->second.begin(), it->second.size()));
   }
 
-  auto sums_list = tarasenko::BidirList< size_t >();
+  auto sums_list = SizeList();
   for (size_t i = 0; i < max_size; ++i)
   {
     sums_list.push_back(0);
